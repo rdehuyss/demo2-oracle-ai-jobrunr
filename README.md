@@ -38,3 +38,26 @@ Please note that the code is currently in DRAFT / WIP.
     - [TicketService#closeTicket(UUID, String) line 33](./src/main/java/org/jobrunr/demo/tickets/TicketService.java)
     - [TicketRepository#updateEmbedding(UUID, double[]) line 52](./src/main/java/org/jobrunr/demo/tickets/TicketRepository.java)
     - [TicketRepository#updateEmbeddingV2(UUID, String) line 56](./src/main/java/org/jobrunr/demo/tickets/TicketRepository.java)
+
+### Exception
+The exception I have is that in the `EMBEDDING` column of the `TICKETS` table, I see the following:
+```java
+java.sql.SQLException: ORA-17004: Invalid column type: JDBC 4.3 does not specify a default conversion for VECTOR. A default conversion may be configured using the  "oracle.jdbc.vectorDefaultGetObjectType" connection property
+https://docs.oracle.com/error-help/db/ora-17004/
+	at oracle.jdbc.driver.SQLStateMapping$SqlExceptionType$1.newInstance(SQLStateMapping.java:58)
+	at oracle.jdbc.driver.SQLStateMapping.newSQLException(SQLStateMapping.java:169)
+	at oracle.jdbc.driver.DatabaseError.newSQLException(DatabaseError.java:175)
+	at oracle.jdbc.driver.DatabaseError.createSqlException(DatabaseError.java:225)
+	at oracle.jdbc.driver.DatabaseError.createSqlException(DatabaseError.java:298)
+	at oracle.jdbc.driver.DatabaseError.createSqlException(DatabaseError.java:319)
+	at oracle.jdbc.driver.VectorAccessor.getObject(VectorAccessor.java:180)
+	at oracle.jdbc.driver.GeneratedStatement.getObject(GeneratedStatement.java:196)
+	at oracle.jdbc.driver.GeneratedScrollableResultSet.getObject(GeneratedScrollableResultSet.java:322)
+	in JdbcHelperImpl.getObject(JdbcHelperImpl.java:345)
+
+``` 
+
+
+### Strange?
+When I run the `UPDATE TICKETS` sql statement from [test.sql](./src/test/test.sql), I would have thought that the update would be completely handled in 
+Oracle, yet also then I see the same exception. 
