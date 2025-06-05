@@ -26,7 +26,7 @@ Please note that the code is currently in DRAFT / WIP.
 
 ### How to run:
 - Download the [`all_MiniLM_L12_v2` model](https://adwc4pm.objectstorage.us-ashburn-1.oci.customer-oci.com/p/VBRD9P8ZFWkKvnfhrWxkpPe8K03-JIoM5h_8EJyJcpE80c108fuUjg7R5L5O7mMZ/n/adwc4pm/b/OML-Resources/o/all_MiniLM_L12_v2_augmented.zip) and save it to [src/main/resources/model](src/main/resources/model)
-  as described in found in Oracle Blog post https://blogs.oracle.com/machinelearning/post/use-our-prebuilt-onnx-model-now-available-for-embedding-generation-in-oracle-database-23ai
+  as described in Oracle Blog post https://blogs.oracle.com/machinelearning/post/use-our-prebuilt-onnx-model-now-available-for-embedding-generation-in-oracle-database-23ai
 - Run the Spring Boot main method [DemoOracleAiJobRunrApplication](./src/main/java/org/jobrunr/demo/DemoOracleAiJobRunrApplication.java)
   - this will use `spring-boot-docker-compose` to automatically start Oracle and load the `all_MiniLM_L12_v2` onnx model
   - it will also automatically create a `TICKETS` table
