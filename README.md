@@ -34,7 +34,7 @@ Please note that the code is currently in DRAFT / WIP.
   - List all tickets (will be empty as no tickets created)
   - Create a new ticket 
   - View the new ticket (there will be no similar tickets yet)
-  - Resolve the new ticket → this does not work. The embeddings can't be updated even if I try to do it in Oracle itself. See:
+  - Resolve the new ticket - this is calling the below two methods:
     - [TicketService#closeTicket(UUID, String) line 33](./src/main/java/org/jobrunr/demo/tickets/TicketService.java)
     - [TicketRepository#updateEmbedding(UUID, double[]) line 52](./src/main/java/org/jobrunr/demo/tickets/TicketRepository.java)
-    - [TicketRepository#updateEmbeddingV2(UUID, String) line 56](./src/main/java/org/jobrunr/demo/tickets/TicketRepository.java)
+  - View the new ticket again and you will see similar results 🎉
