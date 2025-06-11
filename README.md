@@ -22,7 +22,7 @@ Please note that the code is currently in DRAFT / WIP.
   - list all tickets (either open or closed)
   - we can create a ticket
   - we can resolve a ticket => error happens here
-  - we can view a single ticket and find (hopefully 😀) related tickets
+  - we can view a single ticket and find related tickets
 
 ### How to run:
 - Download the [`all_MiniLM_L12_v2` model](https://adwc4pm.objectstorage.us-ashburn-1.oci.customer-oci.com/p/VBRD9P8ZFWkKvnfhrWxkpPe8K03-JIoM5h_8EJyJcpE80c108fuUjg7R5L5O7mMZ/n/adwc4pm/b/OML-Resources/o/all_MiniLM_L12_v2_augmented.zip) and save it to [src/main/resources/model](src/main/resources/model)
