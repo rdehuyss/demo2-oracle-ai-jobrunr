@@ -21,3 +21,14 @@ POST http://localhost:8080/tickets/{{ticket_id}}/resolve
 Content-Type: application/x-www-form-urlencoded
 
 resolution = If you have a JobNotFoundException, it means you changed the signature of your job and it cannot be found anymore in your code.
+
+
+###
+// Create a new ticket
+POST http://localhost:8080/tickets/
+Content-Type: application/x-www-form-urlencoded
+
+subject = JobRunr is having troubles &
+description = When running a job, I encounter a JobNotFoundException
+
+> {% client.global.set("ticket_id", response.body.id); %}

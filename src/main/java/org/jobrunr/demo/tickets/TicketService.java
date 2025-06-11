@@ -2,11 +2,22 @@ package org.jobrunr.demo.tickets;
 
 import org.jobrunr.demo.tickets.model.SimilarTicketResult;
 import org.jobrunr.demo.tickets.model.Ticket;
+import org.jobrunr.jobs.annotations.Job;
+import org.jobrunr.jobs.annotations.Recurring;
 import org.jobrunr.scheduling.JobScheduler;
+import org.jobrunr.scheduling.cron.Cron;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.UUID;
+
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
 
 @Service
 public class TicketService {
@@ -19,12 +30,6 @@ public class TicketService {
         this.jobScheduler = jobScheduler;
     }
 
-    /**
-     * {@link TicketService#closeTicket(UUID, String)}
-     * @param ticket
-     * @param amount
-     * @return
-     */
     public List<SimilarTicketResult> findSimilarTickets(Ticket ticket, int amount) {
         double[] embedding = getEmbeddingForTicket(ticket);
         return ticketRepository.findTopKByEmbedding(embedding, amount);
@@ -35,15 +40,18 @@ public class TicketService {
         Ticket resolvedTicket = ticket.closeTicket(resolution);
         ticketRepository.save(resolvedTicket);
 
-        // Enqueue a background job:
-        //jobScheduler.enqueue(() -> computeAndStoreEmbedding(ticketId));
-
-//        double[] embedding = getEmbeddingForTicket(ticket);
-//        ticketRepository.updateEmbedding(ticketId, embedding);
-
-        ticketRepository.updateEmbeddingV2(ticketId, getTextForEmbedding(resolvedTicket));
+        // Enqueue a background job to update the embeddings
+        jobScheduler.enqueue(() -> computeAndStoreEmbedding(ticketId));
 
         return ticket;
+    }
+
+    @Job(name = "Send daily report of created and resolved tickets")
+    @Recurring(cron = "50 23 * * *")
+    public void sendDailyReport() {
+        Instant since = LocalDateTime.now().withHour(0).withMinute(0).atZone(ZoneId.systemDefault()).toInstant();
+        List<Ticket> ticketsOfToday = ticketRepository.findTicketsByCreatedAtAfter(since);
+        System.out.println(ticketsOfToday);
     }
     
     public void computeAndStoreEmbedding(UUID ticketId) {

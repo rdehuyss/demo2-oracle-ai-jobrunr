@@ -14,10 +14,10 @@ public class DoubleArrayToJdbcValueConverter implements Converter<double[], Jdbc
         SqlTypeValue oracleArrayBinder = new SqlTypeValue() {
             @Override
             public void setTypeValue(java.sql.PreparedStatement ps, int paramIndex, int sqlType, String typeName) throws SQLException {
-                ps.setObject(paramIndex, source, OracleType.VECTOR_FLOAT64);
+                ps.setObject(paramIndex, source, OracleType.VECTOR_FLOAT32);
             }
         };
-        return JdbcValue.of(oracleArrayBinder, OracleType.VECTOR_FLOAT64);
+        return JdbcValue.of(oracleArrayBinder, OracleType.VECTOR_FLOAT32);
     }
 
 }

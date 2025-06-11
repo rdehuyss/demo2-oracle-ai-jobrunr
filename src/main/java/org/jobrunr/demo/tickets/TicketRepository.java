@@ -9,6 +9,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -21,23 +22,10 @@ public interface TicketRepository extends CrudRepository<Ticket, UUID> {
 
     List<Ticket> findByStatus(TicketStatus status);
 
-    /**
-     * Compute a text embedding by calling Oracle AI’s VECTOR_EMBEDDING(…).
-     * Spring Data JDBC will bind :text → the method parameter, run the SQL, and map the single‐column VECTOR back to a double[].
-     */
     @Query("SELECT VECTOR_EMBEDDING(ALL_MINILM_L12_V2 USING :text AS DATA) AS EMB FROM DUAL")
     Object computeEmbedding(@Param("text") String text);
 
-    /**
-     * Find the top K “closed” tickets whose embeddings are closest (cosine) to :vector.
-     *
-     * Note: The SQL below selects ID, SUBJECT, DESCRIPTION, RESOLUTION, and computes
-     *       (1 - VECTOR_DISTANCE(EMBEDDING, :vector, COSINE)) AS SCORE.
-     *
-     * @param vector the 1×768 embedding to compare against
-     * @param topK   how many rows to return
-     * @return a list of projections containing id, subject, description, resolution, score
-     */
+
     @Query("""
         SELECT ID, SUBJECT, DESCRIPTION, RESOLUTION, (1 - VECTOR_DISTANCE(EMBEDDING, :vector, COSINE)) AS SCORE
         FROM TICKETS
@@ -51,7 +39,5 @@ public interface TicketRepository extends CrudRepository<Ticket, UUID> {
     @Query("UPDATE TICKETS SET EMBEDDING = :vector WHERE ID = :ticketId")
     void updateEmbedding(@Param("ticketId") UUID ticketId, @Param("vector") double[] vector);
 
-    @Modifying
-    @Query("UPDATE TICKETS SET EMBEDDING = (SELECT VECTOR_EMBEDDING(ALL_MINILM_L12_V2 USING :text AS DATA) AS EMB FROM DUAL) WHERE ID = :ticketId")
-    void updateEmbeddingV2(@Param("ticketId") UUID ticketId, @Param("text") String text);
+    List<Ticket> findTicketsByCreatedAtAfter(Instant createdAtAfter);
 }
